@@ -1,5 +1,3 @@
-// getknownfolder.cpp : 
-//
 
 #define _WIN32_WINNT _WIN32_WINNT_WIN6
 
@@ -7,93 +5,157 @@
 #include <windows.h>
 #include <ShlObj.h>
 
+#include <atlbase.h>
+#include <atlcom.h>
+
 #include <limits.h>
 #include <stdio.h>
 #include <tchar.h>
 
 #include <string>
+#include <vector>
 
+#include "AppMetadata.h"
 #include "KnownFolder.h"
-#include "KnownFolderDefinitions.h"
+#include "SearchBy.h"
+#include "KnownFolderManager.h"
 
-
-std::wstring GetFolderPath(const KNOWNFOLDERID& rfid)
+void ShowHelp()
 {
-    std::wstring result;
+    wprintf(L"Displays the path for the given known folder name.\n\n");
+    wprintf(L"Usage: %s [-?] [-v] [-a|c|d] [Name] [...]\n\n", ProgramName);
 
-    PWSTR pszPath = NULL;
-    if (S_OK == SHGetKnownFolderPath(rfid, KF_FLAG_DEFAULT, NULL, &pszPath))
-    {
-        result = pszPath;
-        CoTaskMemFree(pszPath);
-    }
-    return result;
+    wprintf(L"  -?  Display this help information.\n");
+    wprintf(L"  -v  Display version information.\n");
+    wprintf(L"  -a  [Default] Searches for the name by display name. If the name does not match a display name searches by canonical name.\n");
+    wprintf(L"  -c  Searches for the name by canonical name.\n");
+    wprintf(L"  -d  Searches for the name by display name.\n\n");
+    wprintf(L"If no parameters are supplied a list of known folders will be displayed in the format:-\n");
+    wprintf(L"Display Name [Canonical Name]=\"Path\"\n");
 }
 
-void InitailiseKnownFoldersArray()
+void ShowVersion()
 {
-    for (size_t i = 0; i < NumberOfKnownFolders; i++)
-    {
-        KnownFolder* item = &(KnownFolders[i]);
-
-        std::wstring path = GetFolderPath(item->m_fid);
-        item->m_path = path;
-        item->m_displayPath = (path.empty()) ? _T("(null)") : path;
-    }
+    wprintf(L"%s %s-%s", ProgramName, ProgramVersion, ProgramConfig);
 }
 
-void ShowKnownFolders()
+struct AppCommand
 {
-    for (size_t i = 0; i < NumberOfKnownFolders; i++)
-    {
-        KnownFolder const*const item = &(KnownFolders[i]);
+    SearchBy        m_searchBy;
+    std::wstring    m_name;
+};
 
-        _tprintf(_T("%s=\"%s\"\r\n"), item->m_name, item->m_displayPath.c_str());
-    }
-}
-
-KnownFolder* FindKnownFolder(PTSTR name)
+struct AppContext
 {
-    KnownFolder* result = NULL;
+    bool                    m_showHelp;
+    bool                    m_showVersion;
+    bool                    m_listKnownFolders;
+    std::vector<AppCommand> m_commands;
+};
 
-    for (size_t i = 0; i < NumberOfKnownFolders; i++)
+AppContext ParseCommandLine(int argc, PWSTR argv[])
+{
+    AppContext result {};
+
+    result.m_listKnownFolders = (1 == argc);
+
+    SearchBy searchBy = SearchBy::Any;
+    for (int i = 1; i < argc; i++)
     {
-        KnownFolder* item = &(KnownFolders[i]);
+        PCWSTR arg = argv[i];
+        size_t argLength = wcslen(arg);
 
-        if (_tcsicmp(item->m_name, name) == 0)
+        if (arg[0] == '-' && argLength > 1)
         {
-            if (false == item->m_path.empty())
+            WCHAR option = towlower(arg[1]);
+
+            switch (option)
             {
-                result = item;
+            case L'a':
+                searchBy = SearchBy::Any;
+                break;
+            case L'c':
+                searchBy = SearchBy::CanonicalName;
+                break;
+            case L'd':
+                searchBy = SearchBy::DisplayName;
+                break;
+            case L'?':
+                result.m_showHelp = true;
+                break;
+            case L'v':
+                result.m_showVersion = true;
+                break;
+            default:
+                break;
             }
+        }
+        else
+        {
+            AppCommand command;
+
+            command.m_searchBy = searchBy;
+            command.m_name = arg;
+
+            result.m_commands.push_back(command);
         }
     }
     return result;
 }
 
-int wmain(int argc, PTSTR argv[])
+void ShowKnownFolder(const KnownFolder& kf)
 {
-    bool listKnownFolders = (1 == argc);
+    wprintf(L"%s [%s]=\"%s\"\n", kf.m_displayName.c_str(), kf.m_canonicalName.c_str(), kf.m_path.c_str());
+}
 
-    InitailiseKnownFoldersArray();
-
-    if (listKnownFolders)
+void ShowKnownFolders(const KnownFolderCollection& items)
+{
+    for (const auto& item : items)
     {
-        ShowKnownFolders();
+        ShowKnownFolder(item);
+    }
+}
+
+int wmain(int argc, PWSTR argv[])
+{
+    int result = 0;
+
+    CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+
+    AppContext appContext = ParseCommandLine(argc, argv);
+
+    KnownFolderManager manager;
+    KnownFolderCollection items = manager.GetAll();
+
+    if (appContext.m_showHelp)
+    {
+        ShowHelp();
+    }
+    else if (appContext.m_showVersion)
+    {
+        ShowVersion();
+    }
+    else if (appContext.m_listKnownFolders)
+    {
+        ShowKnownFolders(items);
     }
     else
     {
-        for (int i = 1; i < argc; i++)
+        for (const auto& command : appContext.m_commands)
         {
-            PTSTR arg = argv[i];
+            const KnownFolder* item = manager.FindByName(items, command.m_name.c_str(), command.m_searchBy);
 
-            KnownFolder const*const item = FindKnownFolder(arg);
-            if (item != NULL && item->m_path.empty() == false)
+            if (item != nullptr && item->m_path.empty() == false)
             {
                 _putts(item->m_path.c_str());
             }
+            else
+            {
+                result = 1;
+            }
         }
     }
-    return 0;
-}
 
+    CoUninitialize();
+    return result;
+}

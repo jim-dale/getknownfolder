@@ -2,8 +2,8 @@
 
 struct KnownFolder
 {
-    const PTSTR     m_name;
-    GUID            m_fid;
+    KNOWNFOLDERID   m_id;
+    std::wstring    m_canonicalName;
+    std::wstring    m_displayName;
     std::wstring    m_path;
-    std::wstring    m_displayPath;
 };
