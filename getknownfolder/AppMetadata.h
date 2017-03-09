@@ -3,7 +3,7 @@
 #define STRINGIFY2(x) #x
 #define STRINGIFY(x) STRINGIFY2(x)
 
-#define VERSION(x) "2.0.0-" STRINGIFY(x)
+#define VERSION(x) "2.0.1-" STRINGIFY(x)
 
 static const PTCHAR ProgramName = _T("getknownfolder");
 static const PTCHAR ProgramVersion = _T(VERSION(BUILDNUM));

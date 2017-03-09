@@ -36,7 +36,7 @@ void ShowHelp()
 
 void ShowVersion()
 {
-    wprintf(L"%s %s-%s", ProgramName, ProgramVersion, ProgramConfig);
+    wprintf(L"%s %s-%s\n", ProgramName, ProgramVersion, ProgramConfig);
 }
 
 struct AppCommand
