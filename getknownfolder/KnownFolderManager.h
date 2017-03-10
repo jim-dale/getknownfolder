@@ -94,9 +94,9 @@ public:
 
         for (const auto& item : items)
         {
-            if (_wcsicmp(item.m_canonicalName.c_str(), name) == 0)
+            if (_wcsicmp(name, item.m_canonicalName.c_str()) == 0)
             {
-                if (false == item.m_path.empty())
+                if (item.m_path.empty()== false)
                 {
                     result = &item;
                 }
@@ -111,9 +111,9 @@ public:
 
         for (const auto& item : items)
         {
-            if (_wcsicmp(item.m_displayName.c_str(), name) == 0)
+            if (_wcsicmp(name, item.m_displayName.c_str()) == 0)
             {
-                if (false == item.m_path.empty())
+                if (item.m_path.empty() == false)
                 {
                     result = &item;
                 }
@@ -126,10 +126,10 @@ private:
     std::wstring GetPath(IKnownFolder* kf)
     {
         std::wstring result;
-        PWSTR pszPath = NULL;
+        PWSTR pszPath = nullptr;
 
         HRESULT hr = kf->GetPath(0, &pszPath);
-        if (SUCCEEDED(hr))
+        if (SUCCEEDED(hr) && pszPath != nullptr)
         {
             result = pszPath;
 
@@ -146,10 +146,10 @@ private:
         HRESULT hr = kf->GetShellItem(0, IID_PPV_ARGS(&sh));
         if (SUCCEEDED(hr))
         {
-            PWSTR pszName = NULL;
+            PWSTR pszName = nullptr;
 
             hr = sh->GetDisplayName(SIGDN_NORMALDISPLAY, &pszName);
-            if (SUCCEEDED(hr))
+            if (SUCCEEDED(hr) && pszName != nullptr)
             {
                 result = pszName;
 

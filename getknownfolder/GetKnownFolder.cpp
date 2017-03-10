@@ -120,42 +120,47 @@ int wmain(int argc, PWSTR argv[])
 {
     int result = 0;
 
-    CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-
-    AppContext appContext = ParseCommandLine(argc, argv);
-
-    KnownFolderManager manager;
-    KnownFolderCollection items = manager.GetAll();
-
-    if (appContext.m_showHelp)
+    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+    if (SUCCEEDED(hr))
     {
-        ShowHelp();
-    }
-    else if (appContext.m_showVersion)
-    {
-        ShowVersion();
-    }
-    else if (appContext.m_listKnownFolders)
-    {
-        ShowKnownFolders(items);
+        AppContext appContext = ParseCommandLine(argc, argv);
+
+        KnownFolderManager manager;
+        KnownFolderCollection items = manager.GetAll();
+
+        if (appContext.m_showHelp)
+        {
+            ShowHelp();
+        }
+        else if (appContext.m_showVersion)
+        {
+            ShowVersion();
+        }
+        else if (appContext.m_listKnownFolders)
+        {
+            ShowKnownFolders(items);
+        }
+        else
+        {
+            for (const auto& command : appContext.m_commands)
+            {
+                const KnownFolder* item = manager.FindByName(items, command.m_name.c_str(), command.m_searchBy);
+
+                if (item != nullptr && item->m_path.empty() == false)
+                {
+                    _putts(item->m_path.c_str());
+                }
+                else
+                {
+                    result = 1;
+                }
+            }
+        }
+        CoUninitialize();
     }
     else
     {
-        for (const auto& command : appContext.m_commands)
-        {
-            const KnownFolder* item = manager.FindByName(items, command.m_name.c_str(), command.m_searchBy);
-
-            if (item != nullptr && item->m_path.empty() == false)
-            {
-                _putts(item->m_path.c_str());
-            }
-            else
-            {
-                result = 1;
-            }
-        }
+        result = 255;
     }
-
-    CoUninitialize();
     return result;
 }
