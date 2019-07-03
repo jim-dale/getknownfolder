@@ -88,7 +88,7 @@ void ShowHelp()
 
 void ShowVersion()
 {
-	wprintf(L"%s %s-%s\n", ProgramName, ProgramVersion, ProgramConfig);
+	wprintf(L"%s version %s-%s (%s)\n", ProgramName, ProgramVersion, ProgramConfig, SourceVersion);
 }
 
 void ShowKnownFolder(const KnownFolder& kf)
