@@ -150,6 +150,8 @@
     <ClCompile Include="getknownfolder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AppCommand.h" />
+    <ClInclude Include="AppContext.h" />
     <ClInclude Include="AppMetadata.h" />
     <ClInclude Include="KnownFolder.h" />
     <ClInclude Include="KnownFolderManager.h" />

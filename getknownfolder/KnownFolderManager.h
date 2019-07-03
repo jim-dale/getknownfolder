@@ -42,7 +42,7 @@ public:
                                 {
                                     kfid,
                                     kfd.pszName,
-                                    GetDisplayName(kf, item.m_canonicalName),
+                                    GetDisplayName(kf, item.canonicalName),
                                     path
                                 };
 
@@ -94,9 +94,9 @@ public:
 
         for (const auto& item : items)
         {
-            if (_wcsicmp(name, item.m_canonicalName.c_str()) == 0)
+            if (_wcsicmp(name, item.canonicalName.c_str()) == 0)
             {
-                if (item.m_path.empty()== false)
+                if (item.path.empty()== false)
                 {
                     result = &item;
                 }
@@ -111,9 +111,9 @@ public:
 
         for (const auto& item : items)
         {
-            if (_wcsicmp(name, item.m_displayName.c_str()) == 0)
+            if (_wcsicmp(name, item.displayName.c_str()) == 0)
             {
-                if (item.m_path.empty() == false)
+                if (item.path.empty() == false)
                 {
                     result = &item;
                 }

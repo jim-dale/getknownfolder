@@ -13,6 +13,19 @@ variables:
 steps:
 - task: VSBuild@1
   inputs:
-    solution: '$(solution)'
+    solution: '$(Solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+- task: CopyFiles@1
+  inputs:
+    sourceFolder: '$(Build.SourcesDirectory)'
+    contents: |
+        '**\bin\$(BuildPlatform)\$(BuildConfiguration)\*.exe'
+        'README.MD'
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: drop
