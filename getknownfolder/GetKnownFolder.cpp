@@ -88,7 +88,15 @@ void ShowHelp()
 
 void ShowVersion()
 {
-	wprintf(L"%s version %s-%s (%s)\n", ProgramName, ProgramVersion, ProgramConfig, SourceVersion);
+	const size_t maxLength = 7;
+	std::wstring sourceVersion(SourceVersion);
+
+	if (sourceVersion.length() > maxLength)
+	{
+		sourceVersion = sourceVersion.substr(0, maxLength);
+	}
+
+	wprintf(L"%s version %s-%s (%s)\n", ProgramName, ProgramVersion, ProgramConfig, sourceVersion.c_str());
 }
 
 void ShowKnownFolder(const KnownFolder& kf)
