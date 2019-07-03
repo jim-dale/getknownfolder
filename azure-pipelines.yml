@@ -20,9 +20,7 @@ steps:
 - task: CopyFiles@1
   inputs:
     sourceFolder: '$(Build.SourcesDirectory)'
-    contents: |
-        '**\bin\$(BuildPlatform)\$(BuildConfiguration)\*.exe'
-        '**\README.md'
+    contents: '**\bin\$(BuildPlatform)\$(BuildConfiguration)\*.exe'
     targetFolder: '$(Build.ArtifactStagingDirectory)'
     flattenFolders: true
 

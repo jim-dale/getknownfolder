@@ -1,6 +1,6 @@
 # getknownfolder
 
-![VSTS Build Status](https://carrewa.visualstudio.com/_apis/public/build/definitions/118f5b1a-e8ad-4c2f-9782-803f6d36735f/2/badge)
+[![Build Status](https://dev.azure.com/carrewa/getknownfolder/_apis/build/status/jim-dale.getknownfolder?branchName=master)](https://dev.azure.com/carrewa/getknownfolder/_build/latest?definitionId=5&branchName=master)
 
 Displays the path for the given known folder name.
 
