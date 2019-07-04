@@ -20,11 +20,13 @@ steps:
 - task: CopyFiles@1
   inputs:
     sourceFolder: '$(Build.SourcesDirectory)'
-    contents: '**\bin\$(BuildPlatform)\$(BuildConfiguration)\*.exe'
+    contents: |
+      '**\bin\$(BuildPlatform)\$(BuildConfiguration)\*.exe'
+      '**\bin\$(BuildPlatform)\$(BuildConfiguration)\*.pdb'
     targetFolder: '$(Build.ArtifactStagingDirectory)'
     flattenFolders: true
 
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    artifactName: drop
+    artifactName: '$(Build.BuildNumber)'
