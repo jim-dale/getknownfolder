@@ -21,12 +21,12 @@ steps:
   inputs:
     sourceFolder: '$(Build.SourcesDirectory)'
     contents: |
-      '**\bin\$(BuildPlatform)\$(BuildConfiguration)\*.exe'
-      '**\bin\$(BuildPlatform)\$(BuildConfiguration)\*.pdb'
+      **\bin\$(BuildPlatform)\$(BuildConfiguration)\*.exe
+      **\bin\$(BuildPlatform)\$(BuildConfiguration)\*.pdb
     targetFolder: '$(Build.ArtifactStagingDirectory)'
     flattenFolders: true
 
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    artifactName: '$(Build.BuildNumber)'
+    artifactName: '$(System.TeamProject)-$(BuildPlatform)-$(BuildConfiguration)-$(Build.SourceVersion)-$(Build.BuildNumber)'
