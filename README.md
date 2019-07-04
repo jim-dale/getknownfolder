@@ -4,16 +4,22 @@
 
 Displays the path for the given known folder name.
 
-Usage: `getknownfolder [-?] [-v] [-a|c|d] [Name] [...]`
+Usage: `getknownfolder [-?] [-v] -[a|c|d] [Name] [...]`
 ```
   -?  Display this help information.
   -v  Display version information.
-  -a  [Default] Searches for the name by display name.
+  -a  [Default] Searches for the known folder by display name.
       If the name does not match a display name, searches by canonical name.
-  -c  Searches for the name by canonical name.
-  -d  Searches for the name by display name.
+  -c  Searches for the known folder by canonical name.
+  -d  Searches for the known folder by display name.
 ```
 
 If no parameters are supplied a list of known folders will be displayed in the format:-
 
 `Display Name [Canonical Name]="Path"`
+
+## Example:
+
+`getknownfolder "Local Documents"`
+
+Returns the current users local document folder e.g. `C:\Users\<username>\Documents`

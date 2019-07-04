@@ -75,15 +75,20 @@ AppContext ParseCommandLine(int argc, PWSTR argv[])
 void ShowHelp()
 {
 	wprintf(L"Displays the path for the given known folder name.\n\n");
-	wprintf(L"Usage: %s [-?] [-v] [-a|c|d] [Name] [...]\n\n", ProgramName);
+	wprintf(L"Usage: %s [-?] [-v] -[a|c|d] [Name] [...]\n\n", ProgramName);
 
-	wprintf(L"  -?  Display this help information.\n");
-	wprintf(L"  -v  Display version information.\n");
-	wprintf(L"  -a  [Default] Searches for the name by display name. If the name does not match a display name, searches by canonical name.\n");
-	wprintf(L"  -c  Searches for the name by canonical name.\n");
-	wprintf(L"  -d  Searches for the name by display name.\n\n");
+	wprintf(L"  -?\tDisplay this help information.\n");
+	wprintf(L"  -v\tDisplay version information.\n");
+	wprintf(L"  -a\t[Default] Searches for the known folder by display name.\n");
+	wprintf(L"\tIf the name does not match a display name, searches by canonical name.\n");
+	wprintf(L"  -c\tSearches for the known folder by canonical name.\n");
+	wprintf(L"  -d\tSearches for the known folder by display name.\n\n");
 	wprintf(L"If no parameters are supplied a list of known folders will be displayed in the format:-\n");
-	wprintf(L"Display Name [Canonical Name]=\"Path\"\n");
+	wprintf(L"Display Name [Canonical Name]=\"Path\"\n\n");
+
+	wprintf(L"Example:\n\n");
+	wprintf(L"getknownfolder \"Local Documents\"\n");
+	wprintf(L"Returns the current users local document folder e.g. \"C:\\Users\\<username>\\Documents\"\n");
 }
 
 void ShowVersion()

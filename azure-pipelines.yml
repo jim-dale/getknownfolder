@@ -14,7 +14,6 @@ pool:
 
 variables:
   solution: '**/*.sln'
-#  buildPlatform: 'x86'
   buildConfiguration: 'Release'
 
 steps:
@@ -36,4 +35,4 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    artifactName: '$(System.TeamProject)-$(BuildPlatform)-$(BuildConfiguration)-$(Build.SourceVersion)-$(Build.BuildNumber)'
+    artifactName: '$(System.TeamProject)-$(BuildPlatform)-$(BuildConfiguration)-$(Build.BuildNumber)'
