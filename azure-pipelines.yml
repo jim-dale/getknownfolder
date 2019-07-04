@@ -2,12 +2,19 @@
 trigger:
 - master
 
+strategy:
+  matrix:
+    x86:
+      buildPlatform : 'x86'
+    x64:
+      buildPlatform : 'x64'
+
 pool:
   vmImage: 'windows-latest'
 
 variables:
   solution: '**/*.sln'
-  buildPlatform: 'x86'
+#  buildPlatform: 'x86'
   buildConfiguration: 'Release'
 
 steps:
@@ -22,7 +29,7 @@ steps:
     sourceFolder: '$(Build.SourcesDirectory)'
     contents: |
       **\bin\$(BuildPlatform)\$(BuildConfiguration)\*.exe
-      **\bin\$(BuildPlatform)\$(BuildConfiguration)\*.pdb
+      **\README.md
     targetFolder: '$(Build.ArtifactStagingDirectory)'
     flattenFolders: true
 
